@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "engine/common/color_utils.hpp"
+#include "engine/common/event_manager.hpp"
 #include "engine/common/number_generator.hpp"
 #include "engine/window_context_handler.hpp"
 
@@ -9,8 +10,9 @@
 #include "thread_pool/thread_pool.hpp"
 
 int main() {
-  const uint32_t window_width = 1920;
-  const uint32_t window_height = 1080;
+  const uint32_t window_width = 4400;
+  const uint32_t window_height = 2500;
+  bool gravity_on = false;
   WindowContextHandler app("Verlet-MultiThread",
                            sf::Vector2u(window_width, window_height),
                            sf::Style::Default);
@@ -34,6 +36,18 @@ int main() {
   app.getEventManager().addKeyPressedCallback(
       sf::Keyboard::Space, [&](sfev::CstEv) { emit = !emit; });
 
+  // Toggle gravity
+  app.getEventManager().addKeyPressedCallback(sf::Keyboard::G,
+                                              [&](sfev::CstEv) {
+                                                if (gravity_on) {
+                                                  solver.gravity = {0.f, 0.f};
+                                                  gravity_on = false;
+                                                } else {
+                                                  solver.gravity = {0.f, 20.f};
+                                                  gravity_on = true;
+                                                }
+                                              });
+
   constexpr uint32_t fps_cap = 60;
   int32_t target_fps = fps_cap;
   app.getEventManager().addKeyPressedCallback(
@@ -45,7 +59,7 @@ int main() {
   // Main loop
   const float dt = 1.0f / static_cast<float>(fps_cap);
   while (app.run()) {
-    if (solver.objects.size() < 80000 && emit) {
+    if (solver.objects.size() < 20 && emit) {
       for (uint32_t i{20}; i--;) {
         const auto id = solver.createObject({2.0f, 10.0f + 1.1f * i});
         solver.objects[id].last_position.x -= 0.2f;
