@@ -135,13 +135,17 @@ struct PhysicSolver {
                              const float margin = 2.0f;
                              if (obj.position.x > world_size.x - margin) {
                                obj.position.x = world_size.x - margin;
+                               obj.velocity = {-obj.velocity.x, obj.velocity.y};
                              } else if (obj.position.x < margin) {
                                obj.position.x = margin;
+                               obj.velocity = {-obj.velocity.x, obj.velocity.y};
                              }
                              if (obj.position.y > world_size.y - margin) {
                                obj.position.y = world_size.y - margin;
+                               obj.velocity = {obj.velocity.x, -obj.velocity.y};
                              } else if (obj.position.y < margin) {
                                obj.position.y = margin;
+                               obj.velocity = {obj.velocity.x, -obj.velocity.y};
                              }
                            }
                          });

@@ -8,6 +8,9 @@ struct PhysicObject {
   Vec2 position = {0.0f, 0.0f};
   Vec2 last_position = {0.0f, 0.0f};
   Vec2 acceleration = {0.0f, 0.0f};
+  Vec2 velocity = {0.f, 0.f};
+  float decceleration = 0.0f;
+
   sf::Color color;
 
   PhysicObject() = default;
@@ -21,13 +24,16 @@ struct PhysicObject {
   }
 
   void update(float dt) {
-    const Vec2 last_update_move = position - last_position;
-    const Vec2 new_position =
-        position + last_update_move +
-        (acceleration - last_update_move * 40.0f) * (dt * dt);
+    // const Vec2 last_update_move = position - last_position;
+    // const Vec2 new_position =
+    //     position + last_update_move +
+    //     (acceleration - last_update_move * decceleration) * (dt * dt);
+    // last_position = position;
+    // position = new_position;
+    // acceleration = {0.0f, 0.0f};
+    //
     last_position = position;
-    position = new_position;
-    acceleration = {0.0f, 0.0f};
+    position = last_position + velocity * dt + acceleration * dt * dt;
   }
 
   void stop() { last_position = position; }
